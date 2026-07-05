@@ -20,8 +20,39 @@ export function getMissingSupabaseServerEnvNames() {
     .map(([name]) => name);
 }
 
+function isValidSupabaseUrl(value?: string) {
+  if (!value) {
+    return false;
+  }
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && url.hostname.endsWith(".supabase.co");
+  } catch {
+    return false;
+  }
+}
+
+function isLikelySupabaseAnonKey(value?: string) {
+  return Boolean(value && value.startsWith("eyJ") && value.length > 100);
+}
+
+export function getInvalidSupabaseServerEnvNames() {
+  return [
+    !isValidSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL?.trim())
+      ? "NEXT_PUBLIC_SUPABASE_URL"
+      : null,
+    !isLikelySupabaseAnonKey(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim())
+      ? "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+      : null
+  ].filter(Boolean);
+}
+
 export function hasSupabaseServerEnv() {
-  return getMissingSupabaseServerEnvNames().length === 0;
+  return (
+    getMissingSupabaseServerEnvNames().length === 0 &&
+    getInvalidSupabaseServerEnvNames().length === 0
+  );
 }
 
 export async function createSupabaseServerClient() {

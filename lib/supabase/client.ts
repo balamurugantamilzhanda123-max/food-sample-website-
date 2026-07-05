@@ -17,14 +17,50 @@ export function getMissingSupabaseBrowserEnvNames() {
     .map(([name]) => name);
 }
 
+function isValidSupabaseUrl(value?: string) {
+  if (!value) {
+    return false;
+  }
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && url.hostname.endsWith(".supabase.co");
+  } catch {
+    return false;
+  }
+}
+
+function isLikelySupabaseAnonKey(value?: string) {
+  return Boolean(value && value.startsWith("eyJ") && value.length > 100);
+}
+
 export function hasSupabaseBrowserEnv() {
-  return getMissingSupabaseBrowserEnvNames().length === 0;
+  return (
+    getMissingSupabaseBrowserEnvNames().length === 0 &&
+    isValidSupabaseUrl(supabaseBrowserEnv.url) &&
+    isLikelySupabaseAnonKey(supabaseBrowserEnv.anonKey)
+  );
 }
 
 export function getSupabaseBrowserConfigError() {
   const missingNames = getMissingSupabaseBrowserEnvNames();
 
   if (missingNames.length === 0) {
+    const invalidNames = [
+      !isValidSupabaseUrl(supabaseBrowserEnv.url)
+        ? "NEXT_PUBLIC_SUPABASE_URL"
+        : null,
+      !isLikelySupabaseAnonKey(supabaseBrowserEnv.anonKey)
+        ? "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+        : null
+    ].filter(Boolean);
+
+    if (invalidNames.length > 0) {
+      return `Supabase is not configured correctly. Invalid: ${invalidNames.join(
+        ", "
+      )}. NEXT_PUBLIC_SUPABASE_URL must be your Supabase Project URL, and NEXT_PUBLIC_SUPABASE_ANON_KEY must be the long anon public API key from Supabase Project Settings > API. Do not use VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in this Next.js app.`;
+    }
+
     return null;
   }
 

@@ -16,9 +16,25 @@ const customerProtectedPrefixes = [
 ];
 
 function hasSupabaseEnv() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return false;
+  }
+
+  try {
+    const url = new URL(supabaseUrl);
+
+    if (url.protocol !== "https:" || !url.hostname.endsWith(".supabase.co")) {
+      return false;
+    }
+  } catch {
+    return false;
+  }
+
   return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
+    supabaseAnonKey.startsWith("eyJ") && supabaseAnonKey.length > 100
   );
 }
 

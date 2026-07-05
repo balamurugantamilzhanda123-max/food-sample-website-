@@ -46,7 +46,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 Use the values from Supabase Project Settings:
 
 - `NEXT_PUBLIC_SUPABASE_URL`: Project URL, like `https://your-project-ref.supabase.co`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Project API `anon public` key
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Project API `anon public` key. This is a long JWT-style value that usually starts with `eyJ`; do not paste the short project ref or service role key here.
 - `SUPABASE_SERVICE_ROLE_KEY`: Optional server-only service role key. Do not expose it in frontend code.
 
 Without Supabase public keys, OTP login, protected customer routes, admin routes, and admin APIs fail closed with a configuration message. The `SUPABASE_SERVICE_ROLE_KEY` is server-only and must never be imported into frontend components.

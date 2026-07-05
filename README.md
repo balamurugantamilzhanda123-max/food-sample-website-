@@ -25,7 +25,13 @@ After building, you can also serve the production build on port 3000:
 powershell.exe -ExecutionPolicy Bypass -File .\scripts\start-server.ps1 -Port 3000
 ```
 
-Copy `.env.example` to `.env.local` and fill these values when connecting real services. This is a Next.js project, so Supabase browser auth must use `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`; `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are only for Vite apps and will not fix login here.
+Create `.env.local` in the project root:
+
+```text
+C:\Users\Bala Murugan\OneDrive\Documents\food sample\.env.local
+```
+
+Fill these values when connecting real services. This is a Next.js project, so Supabase browser auth must use `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`; `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are only for Vite apps and will not fix login here.
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
@@ -36,6 +42,12 @@ RAZORPAY_KEY_SECRET=
 NEXT_PUBLIC_RAZORPAY_KEY_ID=
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
+
+Use the values from Supabase Project Settings:
+
+- `NEXT_PUBLIC_SUPABASE_URL`: Project URL, like `https://your-project-ref.supabase.co`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Project API `anon public` key
+- `SUPABASE_SERVICE_ROLE_KEY`: Optional server-only service role key. Do not expose it in frontend code.
 
 Without Supabase public keys, OTP login, protected customer routes, admin routes, and admin APIs fail closed with a configuration message. The `SUPABASE_SERVICE_ROLE_KEY` is server-only and must never be imported into frontend components.
 

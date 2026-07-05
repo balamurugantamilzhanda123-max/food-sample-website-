@@ -8,11 +8,20 @@ type CookieToSet = {
   options?: Record<string, unknown>;
 };
 
-export function hasSupabaseServerEnv() {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() &&
+export function getMissingSupabaseServerEnvNames() {
+  return [
+    ["NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()],
+    [
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
-  );
+    ]
+  ]
+    .filter(([, value]) => !value)
+    .map(([name]) => name);
+}
+
+export function hasSupabaseServerEnv() {
+  return getMissingSupabaseServerEnvNames().length === 0;
 }
 
 export async function createSupabaseServerClient() {

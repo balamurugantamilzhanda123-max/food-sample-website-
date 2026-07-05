@@ -1,16 +1,22 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import {
+  createSupabaseServerClient,
+  getMissingSupabaseServerEnvNames
+} from "@/lib/supabase/server";
 
 export async function requireAdminApi() {
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
+    const missingNames = getMissingSupabaseServerEnvNames();
+
     return {
       ok: false,
       response: NextResponse.json(
         {
-          error:
-            "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY."
+          error: `Supabase is not configured. Missing: ${missingNames.join(
+            ", "
+          )}. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.`
         },
         { status: 500 }
       )

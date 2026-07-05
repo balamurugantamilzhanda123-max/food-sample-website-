@@ -25,7 +25,7 @@ After building, you can also serve the production build on port 3000:
 powershell.exe -ExecutionPolicy Bypass -File .\scripts\start-server.ps1 -Port 3000
 ```
 
-Copy `.env.example` to `.env.local` and fill these values when connecting real services:
+Copy `.env.example` to `.env.local` and fill these values when connecting real services. This is a Next.js project, so Supabase browser auth must use `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`; `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are only for Vite apps and will not fix login here.
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
@@ -37,7 +37,7 @@ NEXT_PUBLIC_RAZORPAY_KEY_ID=
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-Without Supabase or Razorpay keys, the app runs in demo mode so the UI and flows can be reviewed locally.
+Without Supabase public keys, OTP login, protected customer routes, admin routes, and admin APIs fail closed with a configuration message. The `SUPABASE_SERVICE_ROLE_KEY` is server-only and must never be imported into frontend components.
 
 ## Main Routes
 
@@ -53,6 +53,7 @@ Without Supabase or Razorpay keys, the app runs in demo mode so the UI and flows
 3. Run `supabase/seed.sql` for starter categories and products.
 4. Enable email OTP in Supabase Auth settings.
 5. Create an admin account, then set that user's row in `profiles.role` to `admin`.
+6. Add `http://localhost:3000/auth/callback` and your production `/auth/callback` URL to Supabase Auth redirect URLs.
 
 RLS policies ensure customers can only access their own profile, addresses, cart, orders, returns, refunds, and payments. Admin-only writes are protected through role checks and server routes.
 

@@ -1,5 +1,8 @@
 import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import {
+  createSupabaseServerClient,
+  hasSupabaseServerEnv
+} from "@/lib/supabase/server";
 
 export const customerProtectedRoutes = [
   "/cart",
@@ -27,7 +30,7 @@ export async function getProfileRole(userId: string) {
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
-    return "admin";
+    return "customer";
   }
 
   const { data } = await supabase
@@ -41,14 +44,14 @@ export async function getProfileRole(userId: string) {
 }
 
 export async function requireAdmin() {
-  const user = await getCurrentUser();
-
-  if (!user && process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    redirect("/admin/login");
+  if (!hasSupabaseServerEnv()) {
+    redirect("/admin/login?error=supabase_config");
   }
 
+  const user = await getCurrentUser();
+
   if (!user) {
-    return null;
+    redirect("/admin/login");
   }
 
   const role = await getProfileRole(user.id);

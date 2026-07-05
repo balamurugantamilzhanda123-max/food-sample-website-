@@ -57,7 +57,8 @@ export function ProductForm() {
       </div>
       {saved ? (
         <p className="rounded-lg bg-green-50 p-3 text-sm font-semibold text-brand-success">
-          Product saved in demo mode. Connect Supabase to persist this form.
+          Product form validated. Connect this action to Supabase to persist
+          product changes.
         </p>
       ) : null}
     </form>

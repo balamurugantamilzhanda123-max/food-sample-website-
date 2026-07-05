@@ -13,12 +13,8 @@ export async function POST(request: Request) {
   const payload = productSchema.parse(await request.json());
 
   return NextResponse.json({
-    id: auth.demo ? `demo_product_${Date.now()}` : undefined,
     slug: slugify(payload.name),
     ...payload,
-    demo: auth.demo,
-    message: auth.demo
-      ? "Demo product accepted. Connect Supabase to persist."
-      : "Product validated for admin-only persistence."
+    message: "Product validated for admin-only persistence."
   });
 }

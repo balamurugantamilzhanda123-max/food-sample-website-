@@ -34,7 +34,8 @@ export function ReturnRequestForm({ orderNumber }: { orderNumber: string }) {
       <Button type="submit">Submit Return Request</Button>
       {submitted ? (
         <p className="rounded-lg bg-green-50 p-3 text-sm font-semibold text-brand-success">
-          Return request submitted in demo mode.
+          Return request form validated. Connect Supabase to persist this
+          request.
         </p>
       ) : null}
     </form>

@@ -6,9 +6,14 @@ export async function requireAdminApi() {
 
   if (!supabase) {
     return {
-      ok: true,
-      demo: true,
-      userId: "demo-admin"
+      ok: false,
+      response: NextResponse.json(
+        {
+          error:
+            "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY."
+        },
+        { status: 500 }
+      )
     } as const;
   }
 
@@ -39,7 +44,6 @@ export async function requireAdminApi() {
 
   return {
     ok: true,
-    demo: false,
     userId: user.id
   } as const;
 }

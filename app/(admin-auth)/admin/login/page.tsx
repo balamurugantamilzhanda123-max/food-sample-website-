@@ -1,16 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { Input } from "@/components/shared/Input";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import {
+  createSupabaseBrowserClient,
+  getSupabaseBrowserConfigError
+} from "@/lib/supabase/client";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get("error");
+
+    if (error === "supabase_config") {
+      setStatus(getSupabaseBrowserConfigError() ?? "");
+    }
+
+    if (error === "unauthorized") {
+      setStatus("This account does not have the admin role.");
+    }
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -18,19 +34,20 @@ export default function AdminLoginPage() {
     setStatus("");
 
     const supabase = createSupabaseBrowserClient();
+    const configError = getSupabaseBrowserConfigError();
 
-    if (!supabase) {
-      setStatus(
-        "Demo mode: Supabase is not configured. Admin UI is available for preview."
-      );
+    if (!supabase || configError) {
+      setStatus(configError ?? "Supabase is not configured.");
       setLoading(false);
       return;
     }
 
+    const safeEmail = email.trim().toLowerCase();
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: safeEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/admin/dashboard`
+        shouldCreateUser: false,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/admin/dashboard`
       }
     });
 

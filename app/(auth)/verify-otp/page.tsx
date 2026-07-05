@@ -5,7 +5,10 @@ import Link from "next/link";
 import { KeyRound } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { Input } from "@/components/shared/Input";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import {
+  createSupabaseBrowserClient,
+  getSupabaseBrowserConfigError
+} from "@/lib/supabase/client";
 
 export default function VerifyOtpPage() {
   const [email, setEmail] = useState("");
@@ -26,19 +29,17 @@ export default function VerifyOtpPage() {
     setStatus("");
 
     const supabase = createSupabaseBrowserClient();
+    const configError = getSupabaseBrowserConfigError();
 
-    if (!supabase) {
-      setStatus("Demo mode: OTP accepted. Redirecting to protected preview...");
-      setTimeout(() => {
-        window.location.href = redirectTo;
-      }, 800);
+    if (!supabase || configError) {
+      setStatus(configError ?? "Supabase is not configured.");
       setLoading(false);
       return;
     }
 
     const { error } = await supabase.auth.verifyOtp({
-      email,
-      token,
+      email: email.trim().toLowerCase(),
+      token: token.trim(),
       type: "email"
     });
 

@@ -17,15 +17,37 @@ const customerProtectedPrefixes = [
 
 function hasSupabaseEnv() {
   return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
   );
 }
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  const needsCustomerAuth = customerProtectedPrefixes.some((prefix) =>
+    pathname.startsWith(prefix)
+  );
+
+  const isAdminRoute =
+    pathname.startsWith("/admin") && !pathname.startsWith("/admin/login");
+
   if (!hasSupabaseEnv()) {
+    if (needsCustomerAuth) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/login";
+      redirectUrl.searchParams.set("redirect", pathname);
+      redirectUrl.searchParams.set("error", "supabase_config");
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    if (isAdminRoute) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/admin/login";
+      redirectUrl.searchParams.set("error", "supabase_config");
+      return NextResponse.redirect(redirectUrl);
+    }
+
     return NextResponse.next();
   }
 
@@ -34,8 +56,8 @@ export async function middleware(request: NextRequest) {
   });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL!.trim(),
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!.trim(),
     {
       cookies: {
         getAll() {
@@ -58,19 +80,12 @@ export async function middleware(request: NextRequest) {
     data: { user }
   } = await supabase.auth.getUser();
 
-  const needsCustomerAuth = customerProtectedPrefixes.some((prefix) =>
-    pathname.startsWith(prefix)
-  );
-
   if (needsCustomerAuth && !user) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
     redirectUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(redirectUrl);
   }
-
-  const isAdminRoute =
-    pathname.startsWith("/admin") && !pathname.startsWith("/admin/login");
 
   if (isAdminRoute) {
     if (!user) {

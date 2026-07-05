@@ -25,7 +25,7 @@ export default function AdminSettingsPage() {
           </Select>
           <Select label="Admin route protection" defaultValue="enabled">
             <option value="enabled">Enabled</option>
-            <option value="demo">Demo preview</option>
+            <option value="configuration-required">Configuration required</option>
           </Select>
         </div>
         <Button type="submit">Save Settings</Button>

@@ -5,7 +5,10 @@ import { useState } from "react";
 import { UserPlus } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { Input } from "@/components/shared/Input";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import {
+  createSupabaseBrowserClient,
+  getSupabaseBrowserConfigError
+} from "@/lib/supabase/client";
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
@@ -20,26 +23,25 @@ export default function SignupPage() {
     setStatus("");
 
     const supabase = createSupabaseBrowserClient();
+    const configError = getSupabaseBrowserConfigError();
 
-    if (!supabase) {
-      setStatus(
-        "Demo mode: Supabase keys are missing. Signup form is ready for OTP auth."
-      );
+    if (!supabase || configError) {
+      setStatus(configError ?? "Supabase is not configured.");
       setLoading(false);
       return;
     }
 
     const origin = window.location.origin;
+    const safeEmail = email.trim().toLowerCase();
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: safeEmail,
       options: {
+        shouldCreateUser: true,
         data: {
-          full_name: fullName,
-          mobile
+          full_name: fullName.trim(),
+          mobile: mobile.trim()
         },
-        emailRedirectTo: `${origin}/verify-otp?email=${encodeURIComponent(
-          email
-        )}&redirect=/profile`
+        emailRedirectTo: `${origin}/auth/callback?next=/profile`
       }
     });
 
@@ -47,7 +49,7 @@ export default function SignupPage() {
     setStatus(
       error
         ? error.message
-        : "Account created. Check your email for the OTP to finish verification."
+        : "Account created. Check your email, then enter the OTP or open the secure signup link."
     );
   }
 

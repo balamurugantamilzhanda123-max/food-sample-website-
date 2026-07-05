@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { Input } from "@/components/shared/Input";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import {
+  createSupabaseBrowserClient,
+  getSupabaseBrowserConfigError
+} from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,6 +19,9 @@ export default function LoginPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setRedirectTo(params.get("redirect") ?? "/profile");
+    if (params.get("error") === "supabase_config") {
+      setStatus(getSupabaseBrowserConfigError() ?? "");
+    }
   }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -24,28 +30,31 @@ export default function LoginPage() {
     setStatus("");
 
     const supabase = createSupabaseBrowserClient();
+    const configError = getSupabaseBrowserConfigError();
 
-    if (!supabase) {
-      setStatus(
-        "Demo mode: Supabase keys are missing. Continue to OTP page to preview the flow."
-      );
+    if (!supabase || configError) {
+      setStatus(configError ?? "Supabase is not configured.");
       setLoading(false);
       return;
     }
 
     const origin = window.location.origin;
+    const safeEmail = email.trim().toLowerCase();
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: safeEmail,
       options: {
-        emailRedirectTo: `${origin}/verify-otp?email=${encodeURIComponent(
-          email
-        )}&redirect=${encodeURIComponent(redirectTo)}`
+        shouldCreateUser: false,
+        emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(
+          redirectTo
+        )}`
       }
     });
 
     setLoading(false);
     setStatus(
-      error ? error.message : "OTP sent. Check your email and enter the code."
+      error
+        ? error.message
+        : "OTP sent. Check your email, then enter the code or open the secure login link."
     );
   }
 

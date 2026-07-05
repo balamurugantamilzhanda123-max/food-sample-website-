@@ -34,7 +34,8 @@ export function RefundRequestForm({ orderNumber }: { orderNumber: string }) {
       <Button type="submit">Submit Refund Request</Button>
       {submitted ? (
         <p className="rounded-lg bg-green-50 p-3 text-sm font-semibold text-brand-success">
-          Refund request submitted in demo mode.
+          Refund request form validated. Connect Supabase to persist this
+          request.
         </p>
       ) : null}
     </form>

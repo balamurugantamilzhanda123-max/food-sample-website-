@@ -12,8 +12,8 @@ export default function OrderSuccessPage() {
           Order placed successfully
         </h1>
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          Your demo order ID is FC-2026-1003. Track status from My Orders and
-          download the invoice once the order is confirmed.
+          Your order ID is FC-2026-1003. Track status from My Orders and download
+          the invoice once the order is confirmed.
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link

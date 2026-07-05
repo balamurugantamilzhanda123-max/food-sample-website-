@@ -29,9 +29,6 @@ export async function PATCH(
   return NextResponse.json({
     id,
     status: payload.status,
-    demo: auth.demo,
-    message: auth.demo
-      ? "Demo order status accepted. Connect Supabase to persist."
-      : "Order status validated for admin-only update."
+    message: "Order status validated for admin-only update."
   });
 }

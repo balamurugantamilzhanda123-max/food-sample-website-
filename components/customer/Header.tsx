@@ -25,7 +25,7 @@ export function Header({ isAuthenticated = false }: { isAuthenticated?: boolean 
               F
             </span>
             <span className="text-lg font-black text-brand-secondary">
-              FreshCart
+              EverydayFresh
             </span>
           </Link>
 
@@ -94,7 +94,7 @@ export function Header({ isAuthenticated = false }: { isAuthenticated?: boolean 
           <div className="ml-auto min-h-screen w-80 max-w-[86vw] bg-white p-4 shadow-soft">
             <div className="flex items-center justify-between">
               <span className="text-lg font-black text-brand-secondary">
-                FreshCart
+                EverydayFresh
               </span>
               <Button
                 variant="ghost"

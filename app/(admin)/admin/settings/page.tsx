@@ -15,8 +15,8 @@ export default function AdminSettingsPage() {
       </section>
       <form className="grid gap-5 rounded-lg border border-brand-border bg-white p-5 shadow-sm">
         <div className="grid gap-4 md:grid-cols-2">
-          <Input label="Store name" defaultValue="FreshCart" />
-          <Input label="Support email" defaultValue="support@freshcart.example" />
+          <Input label="Store name" defaultValue="EverydayFresh" />
+          <Input label="Support email" defaultValue="support@everydayfresh.example" />
           <Input label="Delivery fee" type="number" defaultValue="40" />
           <Input label="Free delivery above" type="number" defaultValue="999" />
           <Select label="Payment provider" defaultValue="razorpay">

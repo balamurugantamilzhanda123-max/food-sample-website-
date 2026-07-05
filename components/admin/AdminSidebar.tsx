@@ -36,7 +36,7 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
           F
         </span>
         <span>
-          <span className="block text-base font-black">FreshCart</span>
+          <span className="block text-base font-black">EverydayFresh</span>
           <span className="block text-xs font-semibold text-slate-300">
             Admin Panel
           </span>

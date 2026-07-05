@@ -1,4 +1,4 @@
-# FreshCart Premium Food/Grocery Commerce
+# EverydayFresh Food/Grocery Commerce
 
 A responsive Next.js e-commerce starter for food and grocery sales with OTP login, customer profile, cart, checkout, Razorpay-ready payment routes, orders, returns, refunds, and a separate secure admin panel.
 

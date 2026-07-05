@@ -90,7 +90,7 @@ on conflict (slug) do nothing;
 
 insert into public.admin_settings (key, value)
 values
-  ('store', '{"name":"FreshCart","support_email":"support@freshcart.example"}'),
+  ('store', '{"name":"EverydayFresh","support_email":"support@everydayfresh.example"}'),
   ('payments', '{"provider":"razorpay","currency":"INR"}'),
   ('delivery', '{"fee":40,"free_delivery_above":999}')
 on conflict (key) do update set value = excluded.value;

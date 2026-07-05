@@ -20,7 +20,7 @@ export default function ContactPage() {
           </p>
           <div className="mt-6 space-y-3">
             {[
-              { label: "support@freshcart.example", icon: Mail },
+              { label: "support@everydayfresh.example", icon: Mail },
               { label: "+91 90000 00000", icon: Phone },
               { label: "Bengaluru, Karnataka", icon: MapPin }
             ].map((item) => {

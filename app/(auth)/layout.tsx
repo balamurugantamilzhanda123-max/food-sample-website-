@@ -11,7 +11,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
               F
             </span>
             <span className="text-lg font-black text-brand-secondary">
-              FreshCart
+              EverydayFresh
             </span>
           </Link>
           <Link
